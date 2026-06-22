@@ -14,13 +14,10 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await API.post("/auth/login", { email, password });
-      // ඩේටා ටික Global Context එකට දානවා
       loginUser(response.data.user, response.data.token);
       if (response.data.user && response.data.user.roles.includes("admin")) {
-      // 👑 ඇඩ්මින් කෙනෙක් නම් කෙලින්ම Dashboard එකට හරවා යැවීම
       navigate("/admin");
     } else {
-      // 🧑 සාමාන්‍ය යූසර් කෙනෙක් නම් විතරක් Home පේජ් එකට හරවා යැවීම
       navigate("/");
     }
 

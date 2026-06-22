@@ -94,23 +94,21 @@ const AdminDraw = () => {
         format: "a4"
       });
 
-      // 🎨 2. Header එකක් ඇඳීම (Dark Slate Theme)
-      doc.setFillColor(15, 23, 42); // #0f172a
+      doc.setFillColor(15, 23, 42); 
       doc.rect(0, 0, 210, 40, "F");
 
-      // 🏆 Header Title
-      doc.setTextColor(245, 158, 11); // Amber Color (#f59e0b)
+      doc.setTextColor(245, 158, 11); 
       doc.setFontSize(22);
       doc.setFont("helvetica", "bold");
       doc.text("LANKA LOTTERY SYSTEM", 14, 22);
 
       // Subtitle
-      doc.setTextColor(148, 163, 184); // Slate Light
+      doc.setTextColor(148, 163, 184); 
       doc.setFontSize(10);
       doc.setFont("helvetica", "normal");
       doc.text("Official Automated Draw Execution & Winners Report", 14, 30);
 
-      // 📅 3. Draw එකට අදාළ විස්තර (Metadata)
+      
       doc.setTextColor(30, 41, 59);
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
@@ -123,7 +121,7 @@ const AdminDraw = () => {
       doc.text(`Execution Date/Time: ${today.toLocaleString()}`, 14, 70);
       doc.text(`Status: Verification Successful / Official Released`, 14, 77);
 
-      // 🔮 4. ඇදුණු දිනුම් අංක 5 ලස්සනට පෙන්වීම
+      
       doc.setFillColor(245, 158, 11);
       doc.rect(14, 85, 182, 12, "F");
       doc.setTextColor(15, 23, 42);
@@ -131,13 +129,13 @@ const AdminDraw = () => {
       doc.setFontSize(11);
       doc.text(`OFFICIAL DRAWN NUMBERS:   [   ${finalNumbers.join("   -   ")}   ]`, 20, 92);
 
-      // 📊 5. Financial & Participation Table එක ඇඳීම
+     
       doc.setTextColor(30, 41, 59);
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("PARTICIPATION & PAYOUT SUMMARY", 14, 112);
 
-      // 🟢 UPDATE: autoTable එක ඇතුළට කැඩූ තෑගි විස්තර (Breakdown Tiers) පේළි වශයෙන් ඇතුළත් කිරීම
+      
       autoTable(doc, {
         startY: 117,
         head: [["Description / Metric", "System Value"]],
@@ -156,11 +154,9 @@ const AdminDraw = () => {
         styles: { font: "helvetica", fontSize: 10 }
       });
 
-      // 🛡️ 6. ආරක්ෂිතව Table එක ඉවර වුණු තැන (Y coordinate) සෙට් කිරීම 
       const autoTableInfo = (doc as any).lastAutoTable;
       const finalY = autoTableInfo && autoTableInfo.finalY ? autoTableInfo.finalY + 30 : 185;
 
-      // ✍️ 7. අත්සන් තැබීමේ කොටස (Signatures)
       doc.setDrawColor(203, 213, 225); // Line color
       doc.line(14, finalY, 75, finalY);
       doc.setFont("helvetica", "normal");
@@ -171,7 +167,6 @@ const AdminDraw = () => {
       doc.line(135, finalY, 196, finalY);
       doc.text("Automated System Auditor", 135, finalY + 5);
 
-      // 💾 8. PDF එක බාගත කිරීම
       doc.save(`Lottery_Draw_Report_${today.toISOString().slice(0, 10)}.pdf`);
 
     } catch (error) {
@@ -189,7 +184,7 @@ const AdminDraw = () => {
         </h1>
         <p className="text-slate-400 text-sm mt-1">ලොතරැයිය සජීවීව ඇදීමේ මධ්‍යස්ථානය</p>
 
-        {/* 🔴 LIVE DRAWING BALLS ANIMATION */}
+        
         <div className="flex justify-center gap-4 my-10">
           {shufflingNumbers.map((num, idx) => {
             const isCurrentlyShuffling = currentBallIdx === idx;
@@ -212,7 +207,7 @@ const AdminDraw = () => {
           })}
         </div>
 
-        {/* DRAW ACTION BUTTON */}
+        
         {!isDrawing && !resultSummary && (
           <button
             onClick={startLiveDraw}
@@ -228,14 +223,14 @@ const AdminDraw = () => {
           </p>
         )}
 
-        {/* 📜 WINNERS & PAYOUT REPORT CARD */}
+        
         {resultSummary && (
           <div className="mt-6 bg-slate-950/60 border border-emerald-500/30 p-6 rounded-2xl text-left animate-fadeIn">
             <h3 className="text-emerald-400 font-bold text-lg mb-3 flex items-center gap-2">
               ✅ ඇදීමේ වාර්තාව (Draw Execution Report)
             </h3>
             
-            {/* ප්‍රධාන Summary Grid එක */}
+            
             <div className="grid grid-cols-3 gap-4 text-center mt-2">
               <div className="bg-slate-900 p-3 rounded-xl border border-slate-800">
                 <span className="text-xs text-slate-500 uppercase block">Checked Tickets</span>
@@ -251,7 +246,7 @@ const AdminDraw = () => {
               </div>
             </div>
 
-            {/* 🟢 UPDATE: UI එක මත තෑගි වෙන වෙනම පෙන්වන කොටස (Prize Breakdown Breakdown Dashboard) */}
+            
             <div className="mt-4 p-4 bg-slate-900/50 border border-slate-800/80 rounded-xl space-y-2 text-sm text-slate-300">
               <p className="font-bold text-slate-400 text-xs uppercase tracking-wider mb-2">🎯 Prize Breakdown Tiers:</p>
               
@@ -277,7 +272,7 @@ const AdminDraw = () => {
               </div>
             </div>
 
-            {/* ACTION BUTTONS */}
+            
             <div className="mt-6 flex gap-3">
               <button 
                 onClick={downloadPDFReport}

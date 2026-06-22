@@ -17,10 +17,9 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const { user, updateBalance } = useAuth(); // 👈 Global Context එකෙන් User සහ Balance Update කරන Function එක ගන්නවා
+  const { user, updateBalance } = useAuth(); 
   const navigate = useNavigate();
 
-  // 🔄 විකිණීමට ඇති ටිකට්ස් ටිකBackend එකෙන් ගන්නවා
   useEffect(() => {
     const fetchTickets = async () => {
       try {
@@ -36,9 +35,7 @@ const Home = () => {
     fetchTickets();
   }, []);
 
-  // 💳 ටිකට් එකක් මිලදී ගැනීමේ ප්‍රධාන Function එක
   const handleBuyClick = async (ticketId: string) => {
-    // 1. යූසර් ලොග් වෙලා නැත්නම් ලොගින් පේජ් එකට හරවනවා
     if (!user) {
       alert("ටිකට්පතක් මිලදී ගැනීමට පෙර කරුණාකර පද්ධතියට ඇතුළු වන්න (Login).");
       navigate("/login");
@@ -46,26 +43,20 @@ const Home = () => {
     }
 
     try {
-      // 2. Backend මිලදී ගැනීමේ API එකට Request එක යවනවා
       const response = await API.post("/tickets/buy", {
         userId: user.id,
         ticketId: ticketId,
       });
 
-      // 3. සාර්ථක නම් Global Wallet Balance එක අප්ඩේට් කරනවා
       updateBalance(response.data.currentBalance);
 
-      // 4. මිලදී ගත්තු ටිකට් එක UI එකේ තියෙන ටිකට් ලැයිස්තුවෙන් අයින් කරනවා
       setTickets(tickets.filter((t) => t._id !== ticketId));
 
-      // 5. සාර්ථක මැසේජ් එකක් පෙන්වනවා
       setMessage({ type: "success", text: response.data.message });
       
-      // තත්පර 4කින් මැසේජ් එක Hide කරනවා
       setTimeout(() => setMessage(null), 4000);
 
     } catch (error: any) {
-      // මොකක් හරි අවුලක් ගියොත් (උදා: සල්ලි මදි නම්) ඒ Error මැසේජ් එක පෙන්වනවා
       setMessage({
         type: "error",
         text: error.response?.data?.message || "මිලදී ගැනීම අසාර්ථක විය!",
@@ -85,7 +76,6 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-6xl mx-auto">
-        {/* 👤 උඩින්ම පේන Navbar කෑල්ල (User විස්තර සහ Wallet බැලන්ස් එක පෙන්වන්න) */}
         {user && (
           <div className="bg-white p-4 rounded-xl shadow mb-6 flex justify-between items-center">
             <div>
@@ -100,7 +90,6 @@ const Home = () => {
         <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-2">🍀 Digital Lottery Store</h1>
         <p className="text-center text-gray-600 mb-10">ඔබේ වාසනාවන්ත ලොතරැයි පත අදම තෝරාගන්න! ටිකට්පතක් රු. 100/- ක් පමණි.</p>
 
-        {/* 🔔 Alert Messages පෙන්වන තැන */}
         {message && (
           <div className={`max-w-md mx-auto p-4 rounded-xl text-center font-semibold mb-6 shadow-md transition-all ${
             message.type === "success" ? "bg-green-100 text-green-800 border border-green-300" : "bg-red-100 text-red-800 border border-red-300"

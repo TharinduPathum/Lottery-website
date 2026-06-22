@@ -16,7 +16,7 @@ const Register = () => {
       const response = await API.post("/auth/register", { name, email, password });
       setSuccess(response.data.message + " දැන් Login වන්න.");
       setError("");
-      setTimeout(() => navigate("/login"), 2000); // තත්පර 2කින් Login පේජ් එකට හරවනවා
+      setTimeout(() => navigate("/login"), 2000); 
     } catch (err: any) {
       setError(err.response?.data?.message || "ලියාපදිංචි වීම අසාර්ථකයි!");
     }

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import API from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
-import { io } from "socket.io-client"; // 🔌 real-time වැඩේට socket.io ගත්තා
+import { io } from "socket.io-client"; 
 
-// Backend එක රන් වෙන URL එක මෙතනට දෙන්න (උදා: http://localhost:5000)
 const SOCKET_SERVER_URL = "http://localhost:5000"; 
 
 interface DrawHistory {
@@ -34,36 +33,30 @@ const DrawResults = () => {
   const [liveShufflingNumbers, setLiveShufflingNumbers] = useState<number[]>([0, 0, 0, 0, 0]);
   const [liveFinalNumbers, setLiveFinalNumbers] = useState<number[]>([]);
 
-  // 🔄 1. ඩේටා Fetch කිරීම සහ Socket.io සෙට් කිරීම
   useEffect(() => {
     fetchPastDraws();
 
-    // Socket සන්නිවේදනය ආරම්භ කිරීම
     const socket = io(SOCKET_SERVER_URL);
 
-    // 🔮 Admin ඇදීම පටන් ගත් විට
     socket.on("draw-started", () => {
       setIsLiveDrawing(true);
       setLiveFinalNumbers([]);
       setLiveCurrentBallIdx(0);
     });
 
-    // 🔮 බෝල කරකැවෙන රියල්-ටයිම් ඩේටා අප්ඩේට් එක
     socket.on("ball-shuffling", (data: { ballIdx: number; shufflingNumbers: number[] }) => {
       setLiveCurrentBallIdx(data.ballIdx);
       setLiveShufflingNumbers(data.shufflingNumbers);
     });
 
-    // 🔮 බෝලයක් Lock වූ විට
     socket.on("ball-locked", (data: { finalNumbers: number[] }) => {
       setLiveFinalNumbers(data.finalNumbers);
     });
 
-    // 🔮 ඇදීම සම්පූර්ණයෙන්ම අවසන් වූ විට
     socket.on("draw-finished", () => {
       setIsLiveDrawing(false);
       setLiveCurrentBallIdx(null);
-      fetchPastDraws(); // අලුත් රිසල්ට් එක ලිස්ට් එකට ගන්න රිෆ්‍රෙෂ් කරනවා
+      fetchPastDraws(); 
     });
 
     return () => {
@@ -78,17 +71,14 @@ const DrawResults = () => {
       .finally(() => setLoading(false));
   };
 
-  // 📅 2. සෑම මසකම 25 වනදා රාත්‍රී 10 ට ටාගට් එක හදන Countdown ලොජික් එක
   useEffect(() => {
     const calculateCountdown = () => {
       const now = new Date();
       let year = now.getFullYear();
       let month = now.getMonth();
 
-      // ටාගට් එක: මේ මාසේ 25 රෑ 10:00:00
       let targetDate = new Date(year, month, 25, 22, 0, 0);
 
-      // මේ මාසේ 25 පහුවෙලා නම්, ඊළඟ මාසේ 25 ටාගට් කරනවා
       if (now >= targetDate) {
         month += 1;
         if (month > 11) {
@@ -127,7 +117,6 @@ const DrawResults = () => {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-5xl mx-auto space-y-8">
         
-        {/* 👤 Navbar Component */}
         {user && (
           <div className="bg-white p-4 rounded-xl shadow mb-6 flex justify-between items-center">
             <div>
@@ -145,7 +134,6 @@ const DrawResults = () => {
           <p className="text-gray-600">ලොතරැයි ප්‍රතිඵල සහ සජීවී ඇදීමේ මධ්‍යස්ථානය</p>
         </div>
 
-        {/* 🔴 3. REAL-TIME LIVE DRAW PANEL (ඇඩ්මින් ලයිව් ඇදීම කරද්දී විතරක් මේක උඩින්ම මැජික් එකක් වගේ පේනවා) */}
         {isLiveDrawing ? (
           <div className="bg-white border-2 border-red-500 rounded-2xl p-6 text-center shadow-xl animate-pulse bg-gradient-to-br from-red-50 to-white">
             <div className="flex items-center justify-center gap-2 mb-2">
@@ -154,7 +142,6 @@ const DrawResults = () => {
             </div>
             <p className="text-xs text-gray-500 mb-6">ප්‍රධාන මධ්‍යස්ථානයේ සිට සජීවීව අංක තේරීම සිදු වෙමින් පවතී...</p>
 
-            {/* Live Shuffling Balls */}
             <div className="flex justify-center gap-3 md:gap-4 my-6">
               {liveShufflingNumbers.map((num, idx) => {
                 const isShuffling = liveCurrentBallIdx === idx;
@@ -181,7 +168,6 @@ const DrawResults = () => {
             </p>
           </div>
         ) : (
-          /* ⏳ 4. NEXT DRAW COUNTDOWN TIMER (ලයිව් ඇදීමක් නැති සාමාන්‍ය වෙලාවට මේක පේනවා) */
           <div className="bg-white border-2 border-dashed border-orange-400 rounded-2xl p-6 text-center shadow-lg bg-gradient-to-br from-amber-50 to-white">
             <div className="text-xs font-bold text-orange-600 tracking-wider mb-2 uppercase">⏳ Next Official Draw Countdown</div>
             <p className="text-xs text-gray-500 mb-4">සෑම මසකම 25 වනදා රාත්‍රී 10:00 ට මීළඟ මහා දිනුම් ඇදීම සජීවීව සිදු කෙරේ.</p>
@@ -208,7 +194,6 @@ const DrawResults = () => {
           </div>
         )}
 
-        {/* 🌟 5. LATEST DRAW RESULT (අන්තිමටම ඇදුණු ප්‍රතිඵලය) */}
         {latestDraw && (
           <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-md relative overflow-hidden">
             <div className="text-xs font-bold text-blue-600 tracking-wider mb-1 uppercase">Latest Draw Results History</div>
@@ -241,7 +226,6 @@ const DrawResults = () => {
           </div>
         )}
 
-        {/* 📜 6. PAST DRAWS HISTORY (පරණ ඉතිහාසය) */}
         {draws.length > 1 && (
           <div className="space-y-3">
             <h3 className="font-extrabold text-gray-700 text-xs uppercase tracking-wider pl-1">📜 Past Draw History ({draws.length - 1})</h3>

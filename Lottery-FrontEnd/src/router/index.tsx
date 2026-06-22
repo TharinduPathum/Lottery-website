@@ -16,7 +16,6 @@ import AdminTransactions from "../pages/AdminTransactions";
 function App() {
   return (
     <Router>
-      {/* 👑 Navbar එක මෙතනින් දැම්මම හැම පිටුවකම උඩින්ම ස්ථිරව පේනවා */}
       <Navbar /> 
       
       <Routes>

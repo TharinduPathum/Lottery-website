@@ -4,11 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../api/axiosInstance";
 
-// 🏆 1. ඩේටාබේස් එකෙන් එන නියම හැඩයට Interface එක හැදුවා
 interface Ticket {
   _id: string;
-  ticketNumber: string; // උදා: LOTT-79828
-  luckyNumbers: number[]; // 👈 මෙන්න අංක ටික (Array එකක් විදිහට)
+  ticketNumber: string;
+  luckyNumbers: number[]; 
   drawDate: string;
   price: number;
   status: string;
@@ -20,7 +19,6 @@ const Profile = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [ticketsLoading, setTicketsLoading] = useState<boolean>(true);
   
-  // 🟢 UPDATE: දැනට තෝරාගෙන ඇති දිනය තබා ගැනීමට State එකක්
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,12 +36,11 @@ const Profile = () => {
       .then((res) => {
         setTickets(res.data);
         
-        // 🟢 UPDATE: ටිකට්ස් ආපු ගමන් තියෙන දවස් වලින් අලුත්ම දවස (First Date) Auto Select කරනවා
         if (res.data && res.data.length > 0) {
           const uniqueDates = Array.from(new Set(res.data.map((t: Ticket) => t.drawDate))).sort(
             (a: any, b: any) => new Date(b).getTime() - new Date(a).getTime()
           );
-          setSelectedDate(uniqueDates[0] as string); // ළඟම එන දවස මුලින්ම පෙන්වන්න
+          setSelectedDate(uniqueDates[0] as string); 
         }
       })
       .catch((err) => console.error("Error fetching tickets:", err))
@@ -51,12 +48,10 @@ const Profile = () => {
     }
   }, [user, token, loading, navigate]);
 
-  // 🟢 UPDATE: සියලුම ටිකට්ස් වලින් වෙනස්ම දින (Unique Dates) ටික පමණක් වෙන් කර ගැනීම
   const uniqueDates = Array.from(new Set(tickets.map((t) => t.drawDate))).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime() // අලුත්ම දින උඩට එන ලෙස සෝට් කිරීම
+    (a, b) => new Date(b).getTime() - new Date(a).getTime() 
   );
 
-  // 🟢 UPDATE: දැනට තෝරාගෙන ඇති දවසේ ටිකට්ස් පමණක් Filter කර ගැනීම
   const filteredTickets = tickets.filter((ticket) => ticket.drawDate === selectedDate);
 
   if (loading) {
@@ -74,7 +69,6 @@ const Profile = () => {
     <div className="min-h-screen bg-slate-100 py-10 px-4">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        {/* Left Card: User Details */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 md:col-span-1 text-center h-fit">
           <div className="w-20 h-20 bg-amber-400 text-slate-900 rounded-full flex items-center justify-center font-black text-3xl mx-auto mb-4 shadow">
             {user.name.charAt(0).toUpperCase()}
@@ -90,7 +84,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Right Side: Wallet & Tickets */}
         <div className="md:col-span-2 space-y-6">
           
           {/* Wallet Card */}
@@ -105,13 +98,11 @@ const Profile = () => {
             <PayHereForm />
           </div>
 
-          {/* 🎟️ My Tickets Card */}
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             <h3 className="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
               🎟️ My Purchased Tickets ({tickets.length})
             </h3>
 
-            {/* 🟢 UPDATE: දින වෙන් කර පෙන්වන බටන්ස් පැනලය (Horizontal Scroll සහිතයි) */}
             {!ticketsLoading && uniqueDates.length > 0 && (
               <div className="flex gap-2 overflow-x-auto pb-3 mb-5 border-b border-slate-100 scrollbar-none">
                 {uniqueDates.map((date) => {
@@ -140,7 +131,6 @@ const Profile = () => {
               </div>
             )}
 
-            {/* 🎟️ TICKET LIST DISPLAY AREA */}
             {ticketsLoading ? (
               <p className="text-sm text-slate-400 py-4 text-center">Loading tickets...</p>
             ) : tickets.length === 0 ? (
@@ -152,7 +142,6 @@ const Profile = () => {
                 <p className="text-sm text-slate-500 font-medium">මෙම දිනය සඳහා ටිකට්පත් කිසිවක් නැත.</p>
               </div>
             ) : (
-              // 🟢 UPDATE: මෙතන පෙන්වන්නේ filter කරපු Tickets ටික විතරයි (`filteredTickets`)
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fadeIn">
                 {filteredTickets.map((ticket) => (
                   <div key={ticket._id} className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-dashed border-amber-200 p-5 rounded-xl relative overflow-hidden shadow-sm">
@@ -169,7 +158,6 @@ const Profile = () => {
                         <span className="text-xs font-bold text-orange-600">Rs.{ticket.price}</span>
                       </div>
 
-                      {/* ලකී නම්බර්ස් බෝල */}
                       <div className="flex gap-1.5 my-3">
                         {ticket.luckyNumbers.map((num, idx) => (
                           <span key={idx} className="w-8 h-8 rounded-full bg-gradient-to-b from-amber-400 to-amber-500 text-slate-900 flex items-center justify-center font-black text-sm shadow-sm border border-amber-300">
@@ -181,7 +169,6 @@ const Profile = () => {
                       <p className="text-[11px] text-slate-500 border-t pt-2 mt-2 border-amber-200/60 flex justify-between">
                         <span>Draw Date: <span className="font-semibold text-slate-700">{new Date(ticket.drawDate).toLocaleDateString()}</span></span>
                         
-                        {/* 🟢 BONUS: ටිකට් එක දිනලද පැරදිලද කියලා බැලීමට ලස්සන ස්ටේටස් මැසේජ් එකක් */}
                         <span className={`font-bold capitalize ${
                           ticket.status === "won" ? "text-emerald-600" : ticket.status === "lost" ? "text-rose-500" : "text-amber-600"
                         }`}>

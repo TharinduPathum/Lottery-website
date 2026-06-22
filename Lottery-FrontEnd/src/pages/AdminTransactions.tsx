@@ -25,7 +25,6 @@ const AdminTransactions = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // 🔄 🟢 AdminDraw එකේ පාවිච්චි කරපු Loading ස්පිනර් එකමයි (ඩාර්ක් පසුබිම සමඟ)
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-950">
@@ -34,13 +33,11 @@ const AdminTransactions = () => {
     );
   }
 
-  // 🔍 Filter Logic
   const filteredTransactions = transactions.filter((tx) => {
     if (filterType === "all") return true;
     return tx.type === filterType;
   });
 
-  // 💰 ගණනය කිරීම් (Summary Metrics)
   const totalDeposits = transactions.filter(t => t.type === "deposit" && t.status === "success").reduce((sum, t) => sum + t.amount, 0);
   const totalSales = transactions.filter(t => t.type === "purchase" && t.status === "success").reduce((sum, t) => sum + t.amount, 0);
   const totalPayouts = transactions.filter(t => t.type === "winning" && t.status === "success").reduce((sum, t) => sum + t.amount, 0);
@@ -57,7 +54,7 @@ const AdminTransactions = () => {
           <p className="text-slate-400 text-sm mt-1">සිස්ටම් එක තුළ සිදුවූ සියලුම මුදල් ගනුදෙනු වාර්තා මෙතැනින් පරීක්ෂා කරන්න.</p>
         </div>
 
-        {/* 📈 💰 QUICK SUMMARY CARDS (AdminDraw ස්ටයිල් එකට හැදූ කාඩ් පද්ධතිය) */}
+       
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
             <span className="text-xs text-slate-500 uppercase block font-bold tracking-wider">Total User Deposits</span>
@@ -73,7 +70,7 @@ const AdminTransactions = () => {
           </div>
         </div>
 
-        {/* 🎛️ FILTER BAR (ඩාර්ක් මෝඩ් බටන්ස්) */}
+        
         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Filter History:</span>
           <div className="flex gap-2 w-full sm:w-auto">
@@ -93,7 +90,7 @@ const AdminTransactions = () => {
           </div>
         </div>
 
-        {/* 📅 🧾 TRANSACTIONS PREMIUM TABLE */}
+       
         <div className="bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
           {filteredTransactions.length === 0 ? (
             <p className="text-center py-12 text-slate-500 font-bold tracking-wide">කිසිදු ගනුදෙනු වාර්තාවක් හමු නොවීය.</p>
@@ -113,7 +110,7 @@ const AdminTransactions = () => {
                   {filteredTransactions.map((tx) => (
                     <tr key={tx._id} className="hover:bg-slate-800/30 transition-colors duration-150">
                       
-                      {/* Date */}
+                     
                       <td className="p-4 font-medium text-slate-500 text-xs">
                         {new Date(tx.createdAt).toLocaleString()}
                       </td>
@@ -124,7 +121,7 @@ const AdminTransactions = () => {
                         <div className="text-xs text-slate-500 font-mono">{tx.user?.email}</div>
                       </td>
                       
-                      {/* Type Badge (Admin Draw එකේ බැජ් ස්ටයිල් එකටම හැදුවා) */}
+                      
                       <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest border ${
                           tx.type === "deposit" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
